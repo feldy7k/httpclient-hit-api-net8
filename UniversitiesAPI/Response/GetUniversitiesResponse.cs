@@ -1,8 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
+// author: feldy judah k
+// .NET 8
+
 namespace UniversitiesAPI.Response
 {
-    public class GetUniversitiesByCountryResponse
+    public class GetUniversitiesResponse
     {
         [JsonPropertyName("state-province")]
         public string StateProvince { get; set; }

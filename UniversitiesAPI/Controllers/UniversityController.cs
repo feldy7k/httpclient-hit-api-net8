@@ -3,22 +3,25 @@ using System.Text.Json;
 using UniversitiesAPI.Request;
 using UniversitiesAPI.Response;
 
+// author: feldy judah k
+// .NET 8
+
 namespace UniversitiesAPI.Controllers
 {
     [ApiController]
-    [Route("universities")]
-    public class UniversitiesController : ControllerBase
+    [Route("university")]
+    public class UniversityController : ControllerBase
     {
-        private readonly ILogger<UniversitiesController> _logger;
+        private readonly ILogger<UniversityController> _logger;
 
-        public UniversitiesController(ILogger<UniversitiesController> logger)
+        public UniversityController(ILogger<UniversityController> logger)
         {
             _logger = logger;
         }
 
         [Produces("application/json")]
-        [HttpGet("get_universities_by_country")]
-        public async Task<IActionResult> GetUniversitiesByCountry([FromQuery] GetUniversitiesByCountryRequest request, CancellationToken cancellationToken)
+        [HttpGet("get_universities")]
+        public async Task<IActionResult> GetUniversities([FromQuery] GetUniversitiesRequest request, CancellationToken cancellationToken)
         {
             // Create a new HttpClient instance
             using var httpClient = new HttpClient();
@@ -45,10 +48,18 @@ namespace UniversitiesAPI.Controllers
                 response.EnsureSuccessStatusCode();
 
                 // Read and display the response
-                string responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-                var Responses = JsonSerializer.Deserialize<List<GetUniversitiesByCountryResponse>>(responseBody);
+                string responseJsonString = await response.Content.ReadAsStringAsync(cancellationToken);
+                var ListUniversities = JsonSerializer.Deserialize<List<GetUniversitiesResponse>>(responseJsonString)
+                                        ?? new List<GetUniversitiesResponse>();
 
-                return Ok(Responses);
+                // create parent json
+                var GenResponse = new GenericResponse<GetUniversitiesResponse>()
+                {
+                    Middleware = "UniversitiesAPI",
+                    Entity = ListUniversities
+                };
+                
+                return Ok(GenResponse);
             }
             catch (Exception ex)
             {
