@@ -61,11 +61,17 @@ namespace UniversitiesAPI.Controllers
                     Middleware = "UniversitiesAPI",
                     Entity = ListUniversities
                 };
-                
+
+                // dispose HttpClient
+                httpClient.Dispose();
+
                 return Ok(GenResponse);
             }
             catch (Exception ex)
             {
+                // dispose HttpClient
+                httpClient.Dispose();
+
                 // Handle other exceptions
                 return BadRequest(ex.Message);
             }
