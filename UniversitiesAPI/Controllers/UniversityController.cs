@@ -24,7 +24,7 @@ namespace UniversitiesAPI.Controllers
         public async Task<IActionResult> GetUniversities([FromQuery] GetUniversitiesRequest request, CancellationToken cancellationToken)
         {
             // Create a new HttpClient instance
-            using var httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
 
             // Define the API endpoint
             string ApiURL = "http://universities.hipolabs.com/search";
@@ -38,6 +38,9 @@ namespace UniversitiesAPI.Controllers
 
             try
             {
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "UniversitiesAPI");
+
                 // Send GET request
                 var response = await httpClient.GetAsync(ApiURL, cancellationToken);
 
