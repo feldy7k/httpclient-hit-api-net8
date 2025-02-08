@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
 using UniversitiesAPI.Request;
 using UniversitiesAPI.Response;
@@ -28,13 +30,15 @@ namespace UniversitiesAPI.Controllers
 
             // Define the API endpoint
             string ApiURL = "http://universities.hipolabs.com/search";
-            string param1Key = "name=";
-            string param1Value = request.Name ?? ""; // optional
-            string param2Key = "country=";
-            string param2Value = request.Country;
 
-            // Full URL with query string
-            ApiURL = $"{ApiURL}?{param1Key}{param1Value}&{param2Key}{param2Value}";
+            var queryParams = new Dictionary<string, string?>
+            {
+                { "name", request.Name },
+                { "country", request.Country }
+            };
+
+            // add queryParams to ApiURL
+            string ApiURL_WithQuery = QueryHelpers.AddQueryString(ApiURL, queryParams);
 
             try
             {
@@ -44,7 +48,7 @@ namespace UniversitiesAPI.Controllers
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "your-token");
 
                 // Send GET request
-                var response = await httpClient.GetAsync(ApiURL, cancellationToken);
+                var response = await httpClient.GetAsync(ApiURL_WithQuery, cancellationToken);
 
                 // If POST then:
                 // var response = await httpClient.PostAsync(ApiURL, content, cancellationToken);
