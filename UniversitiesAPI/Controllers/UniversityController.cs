@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Net;
 using System.Text.Json;
 using UniversitiesAPI.Request;
 using UniversitiesAPI.Response;
@@ -84,8 +84,12 @@ namespace UniversitiesAPI.Controllers
                 // dispose HttpClient
                 httpClient.Dispose();
 
-                // Handle other exceptions
-                return BadRequest(ex.Message);
+                // return error response
+                var errorResponse = new ErrorResponse()
+                {
+                    Message = ex.Message
+                };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
             }
         }
 
