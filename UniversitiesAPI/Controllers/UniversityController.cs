@@ -40,6 +40,8 @@ namespace UniversitiesAPI.Controllers
             {
                 httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
                 httpClient.DefaultRequestHeaders.Add("User-Agent", "UniversitiesAPI");
+                // if using auth header JWT:
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "your-token");
 
                 // Send GET request
                 var response = await httpClient.GetAsync(ApiURL, cancellationToken);
