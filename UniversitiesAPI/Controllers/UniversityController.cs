@@ -50,24 +50,30 @@ namespace UniversitiesAPI.Controllers
                 // var response = await httpClient.PostAsync(ApiURL, content, cancellationToken);
 
                 // Ensure the response status is successful
-                response.EnsureSuccessStatusCode();
-
-                // Read and display the response
-                string responseJsonString = await response.Content.ReadAsStringAsync(cancellationToken);
-                var ListUniversities = JsonSerializer.Deserialize<List<GetUniversitiesResponse>>(responseJsonString)
-                                        ?? new List<GetUniversitiesResponse>();
-
-                // create parent json
-                var GenResponse = new GenericResponse<GetUniversitiesResponse>()
+                if (response.EnsureSuccessStatusCode().IsSuccessStatusCode)
                 {
-                    Middleware = "UniversitiesAPI",
-                    Entity = ListUniversities
-                };
 
-                // dispose HttpClient
-                httpClient.Dispose();
+                    // Read and display the response
+                    string responseJsonString = await response.Content.ReadAsStringAsync(cancellationToken);
+                    var ListUniversities = JsonSerializer.Deserialize<List<GetUniversitiesResponse>>(responseJsonString)
+                                            ?? new List<GetUniversitiesResponse>();
 
-                return Ok(GenResponse);
+                    // create parent json
+                    var GenResponse = new GenericResponse<GetUniversitiesResponse>()
+                    {
+                        Middleware = "UniversitiesAPI",
+                        Entity = ListUniversities
+                    };
+
+                    // dispose HttpClient
+                    httpClient.Dispose();
+
+                    return Ok(GenResponse);
+                }
+                else
+                {
+                    throw new Exception("IsSuccessStatusCode false");
+                }
             }
             catch (Exception ex)
             {
